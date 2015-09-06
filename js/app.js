@@ -30,14 +30,21 @@ Enemy.prototype.render = function() {
 
 
 // Player constructor
-var Player = function(x, y) {
+var Player = function() {
     this.sprite = 'images/char-boy.png';
-    this.x = x;
-    this.y = y;
-    this.targetX = x;
-    this.targetY = y;
+    this.place();
     this.speed = 180;
+    this.lives = 3;
 }
+
+//Place the player randomly in the bottom rows
+Player.prototype.place = function() {
+    this.x = Math.floor(Math.random() * game.columns) * game.colWidth;
+    this.y = (Math.floor(Math.random() * 2) + 4) * game.rowHeight;
+    this.targetX = this.x;
+    this.targetY = this.y;
+}
+
 
 // It upates the position of the Player
 // Parameter: dt, a time delta between ticks
@@ -67,6 +74,18 @@ Player.prototype.update = function(dt) {
 // Draw the Player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+//Reset player and take one life away
+Player.prototype.die = function() {
+    this.place();
+    /*if (lifes > 0) {
+        this.lifes = lifes - 1;
+    } else {
+
+    }
+    */
+
 }
 
 // Change the Player target position in response to input
