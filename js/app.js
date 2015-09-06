@@ -10,7 +10,7 @@ var Enemy = function() {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    this.x = this.x + this.speed * dt;
+    this.x = Math.floor(this.x + this.speed * dt);
     if (this.x > game.columns * game.colWidth) {
         this.place();
     }
@@ -34,22 +34,67 @@ var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
     this.x = x;
     this.y = y;
+    this.targetX = x;
+    this.targetY = y;
+    this.speed = 180;
 }
 
 // It upates the position of the Player
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(dt) {
-    this.
+    var dp = this.speed * dt;
+    var dx = Math.abs(this.targetX - this.x);
+    if (dx > dp) {
+        dx = dp;
+    }
+    var dy = Math.abs(this.targetY - this.y);
+    if (dy > dp) {
+        dy = dp;
+    }
+    if(this.x > this.targetX) {
+        this.x = Math.floor(this.x - dx);
+    } else {
+        this.x = Math.floor(this.x + dx);
+    }
+    if(this.y > this.targetY) {
+        this.y = Math.floor(this.y - dy);
+    } else {
+        this.y = Math.floor(this.y + dy);
+    }
+
 }
 
 // Draw the Player on the screen, required method for game
 Player.prototype.render = function() {
-     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    console.log(this.x, this.y, this.targetX, this.targetY);
 }
 
 // Change the Player target position in response to input
 // Parameter: Direction to move to
 Player.prototype.handleInput = function(dir) {
+    switch(dir) {
+        case 'left':
+            if(this.targetX > 0) {
+                this.targetX = this.targetX - game.colWidth;
+            }
+            break;
+        case 'up':
+            if(this.targetY > 0) {
+                this.targetY = this.targetY - game.rowHeight;
+            }
+            break;
+        case 'right':
+            if(this.targetX < (game.columns - 2) * game.colWidth) {
+                this.targetX = this.targetX + game.colWidth;
+            }
+            break;
+        case 'down':
+            if(this.targetY < (game.rows - 2) * game.rowHeight) {
+                this.targetY = this.targetY + game.rowHeight;
+            }
+            break;
+    }
 }
 
 // Define the parameter for the board of the game and the amount of enemies
