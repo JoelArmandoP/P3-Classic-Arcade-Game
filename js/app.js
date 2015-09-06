@@ -67,7 +67,6 @@ Player.prototype.update = function(dt) {
 // Draw the Player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    console.log(this.x, this.y, this.targetX, this.targetY);
 }
 
 // Change the Player target position in response to input
@@ -97,14 +96,24 @@ Player.prototype.handleInput = function(dir) {
     }
 }
 
-// Define the parameter for the board of the game and the amount of enemies
+// Define the parameters for the game: board, lifes and enemies.
 var game = {
-    rows: 6,
-    columns: 5,
+    rowImages: [
+        'images/water-block.png',   // Top row is water
+        'images/stone-block.png',   // Row 1 of 3 of stone
+        'images/stone-block.png',   // Row 2 of 3 of stone
+        'images/stone-block.png',   // Row 3 of 3 of stone
+        'images/grass-block.png',   // Row 1 of 2 of grass
+        'images/grass-block.png',   // Row 2 of 3 of grass
+        'images/grass-block.png'    // Row 3 of 3 of grass
+        ],
+    columns: 6,
     rowHeight: 83,
     colWidth: 101,
-    numEnemies: 6
-}
+    numEnemies: 6,
+    //playerSpeed: 180,
+};
+game.rows = game.rowImages.length;
 
 // Keep track of all the enemies.
 var allEnemies = [];
@@ -115,7 +124,7 @@ for (var i = 0; i < game.numEnemies; i++) {
     allEnemies.push(enemy);
 }
 
-// Create the Player for the game
+// Create the Player to start the game
 var player = new Player(300, 205);
 
 
@@ -132,3 +141,4 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+

@@ -107,16 +107,17 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            row, col;
+        var row, col;
 
+        /* Paint a row before the first one with the same tile as row 0.
+         * This is needed because the tiles don't reach the top of the
+         * canvas and the player can leave artifacts if it gets drawn
+         * on the top row.
+         */
+        for (col = 0; col < game.columns; col++) {
+            ctx.drawImage(Resources.get(game.rowImages[0]),
+                col * game.colWidth, -game.rowHeight);
+        }
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
@@ -130,7 +131,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]),
+                ctx.drawImage(Resources.get(game.rowImages[row]),
                     col * game.colWidth, row * game.rowHeight);
             }
         }
