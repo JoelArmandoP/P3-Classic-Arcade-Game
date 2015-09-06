@@ -73,19 +73,17 @@ Player.prototype.update = function(dt) {
 
 // Draw the Player on the screen, required method for game
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    if (this.lives > 0) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
 }
 
 //Reset player and take one life away
 Player.prototype.die = function() {
     this.place();
-    /*if (lifes > 0) {
-        this.lifes = lifes - 1;
-    } else {
-
+    if (this.lives > 0) {
+        this.lives -= 1;
     }
-    */
-
 }
 
 // Change the Player target position in response to input

@@ -56,7 +56,9 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if (player.lives > 0) {
+            win.requestAnimationFrame(main);
+        };
     }
 
     /* This function does some initial setup that should only occur once,
@@ -150,6 +152,11 @@ var Engine = (function(global) {
             }
         }
 
+        for (var life = 0; life < player.lives; life++) {
+            ctx.drawImage(Resources.get('images/small-heart.png'),
+                life * game.colWidth/3, 0);
+        }
+
         renderEntities();
     }
 
@@ -185,7 +192,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/small-heart.png'
     ]);
     Resources.onReady(init);
 
