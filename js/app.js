@@ -19,13 +19,13 @@ Enemy.prototype.update = function(dt) {
 // Place the enemy at a random position with a random speed
 Enemy.prototype.place = function() {
     this.x = -Math.floor(Math.random() * game.columns) * game.colWidth - game.colWidth;
-    this.y = Math.floor(Math.random() * 3 + 1) * game.rowHeight - 20;
+    this.y = Math.floor(Math.random() * 4 + 3) * game.rowHeight;
     this.speed = Math.floor(Math.random() * 100 ) + 90;
 }
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    drawImg(Resources.get(this.sprite), this.x, this.y);
 };
 
 
@@ -74,7 +74,7 @@ Player.prototype.update = function(dt) {
 // Draw the Player on the screen, required method for game
 Player.prototype.render = function() {
     if (this.lives > 0) {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+        drawImg(Resources.get(this.sprite), this.x, this.y);
     }
 }
 
@@ -116,21 +116,37 @@ Player.prototype.handleInput = function(dir) {
 // Define the parameters for the game: board, lifes and enemies.
 var game = {
     rowImages: [
-        'images/water-block.png',   // Top row is water
-        'images/stone-block.png',   // Row 1 of 3 of stone
-        'images/stone-block.png',   // Row 2 of 3 of stone
-        'images/stone-block.png',   // Row 3 of 3 of stone
-        'images/grass-block.png',   // Row 1 of 2 of grass
-        'images/grass-block.png',   // Row 2 of 3 of grass
-        'images/grass-block.png'    // Row 3 of 3 of grass
+        'images/stone-block.png',   // First row is stone
+        'images/water-block.png',   // Row 1 of 2 of water
+        'images/water-block.png',   // Row 2 of 2 of water
+        'images/stone-block.png',   // Row 1 of 4 of stone
+        'images/stone-block.png',   // Row 2 of 4 of stone
+        'images/stone-block.png',   // Row 3 of 4 of stone
+        'images/stone-block.png',   // Row 4 of 4 of stone
+        'images/grass-block.png',   // Row 1 of 5 of grass
+        'images/grass-block.png',   // Row 2 of 5 of grass
+        'images/grass-block.png',   // Row 3 of 5 of grass
+        'images/grass-block.png',   // Row 4 of 5 of grass
+        'images/grass-block.png'    // Row 5 of 5 of grass
         ],
-    columns: 6,
-    rowHeight: 83,
-    colWidth: 101,
+    tree: 'images/tree-short.png',
+    bridgeBlock: 'images/stone-block-tall.png',
+    bridgeNorth: 'images/ramp-north.png',
+    BridgeSouth: 'images/ramp-south.png',
+    columns: 12,
+    rowHeight: 40,
+    colWidth: 50,
+    imgHeight: 171,
+    imgTile: 80,
+    imgWidth: 101,
+    imgAbove: 50,
     numEnemies: 6,
     //playerSpeed: 180,
 };
 game.rows = game.rowImages.length;
+game.imgScale = game.colWidth/game.imgWidth;
+game.imgHeightScaled = game.imgHeight * game.imgScale;
+game.imgAboveScaled = game.imgAbove * game.imgScale;
 
 // Keep track of all the enemies.
 var allEnemies = [];
@@ -144,7 +160,9 @@ for (var i = 0; i < game.numEnemies; i++) {
 // Create the Player to start the game
 var player = new Player(300, 205);
 
-
+function drawImg(img, x, y) {
+    ctx.drawImage(img, x, y-game.imgAboveScaled, game.colWidth, game.imgHeightScaled);
+}
 
 // This listens for key presses and sends the keys to
 // Player.handleInput() method.
