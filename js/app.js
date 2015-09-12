@@ -3,7 +3,7 @@ var Enemy = function() {
     // Variables applied to each of our instances go here,
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = 'enemy';
     this.place();
 };
 
@@ -19,7 +19,7 @@ Enemy.prototype.update = function(dt) {
 // Place the enemy at a random position with a random speed
 Enemy.prototype.place = function() {
     this.x = -Math.floor(Math.random() * game.columns) * game.colWidth - game.colWidth;
-    this.y = Math.floor(Math.random() * 4 + 3) * game.rowHeight;
+    this.y = Math.floor(Math.random() * 5 + 3) * game.rowHeight;
     this.speed = Math.floor(Math.random() * 100 ) + 90;
 }
 
@@ -31,7 +31,7 @@ Enemy.prototype.render = function() {
 
 // Player constructor
 var Player = function() {
-    this.sprite = 'images/char-boy.png';
+    this.sprite = 'boy';
     this.place();
     this.speed = 180;
     this.lives = 3;
@@ -115,24 +115,35 @@ Player.prototype.handleInput = function(dir) {
 
 // Define the parameters for the game: board, lifes and enemies.
 var game = {
+    assets: {
+        stone: 'images/stone-block.png',
+        water: 'images/water-block.png',
+        grass: 'images/grass-block.png',
+        enemy: 'images/enemy-bug.png',
+        boy:   'images/char-boy.png',
+        heart: 'images/small-heart.png',
+        tree:  'images/tree-short.png',
+/*        orangeGem:
+        blueGem:
+        greenGem:
+        key:
+        chestClosed:
+        chestOpen: */
+    },
     rowImages: [
-        'images/stone-block.png',   // First row is stone
-        'images/water-block.png',   // Row 1 of 2 of water
-        'images/water-block.png',   // Row 2 of 2 of water
-        'images/stone-block.png',   // Row 1 of 4 of stone
-        'images/stone-block.png',   // Row 2 of 4 of stone
-        'images/stone-block.png',   // Row 3 of 4 of stone
-        'images/stone-block.png',   // Row 4 of 4 of stone
-        'images/grass-block.png',   // Row 1 of 5 of grass
-        'images/grass-block.png',   // Row 2 of 5 of grass
-        'images/grass-block.png',   // Row 3 of 5 of grass
-        'images/grass-block.png',   // Row 4 of 5 of grass
-        'images/grass-block.png'    // Row 5 of 5 of grass
+        'stone',   // First row is stone
+        'water',   // Row 1 of 2 of water
+        'water',   // Row 2 of 2 of water
+        'stone',   // Row 1 of 5 of stone
+        'stone',   // Row 2 of 5 of stone
+        'stone',   // Row 3 of 5 of stone
+        'stone',   // Row 4 of 5 of stone
+        'stone',   // Row 4 of 5 of grass
+        'grass',   // Row 1 of 4 of grass
+        'grass',   // Row 2 of 4 of grass
+        'grass',   // Row 3 of 4 of grass
+        'grass'    // Row 4 of 4 of grass
         ],
-    tree: 'images/tree-short.png',
-    bridgeBlock: 'images/stone-block-tall.png',
-    bridgeNorth: 'images/ramp-north.png',
-    BridgeSouth: 'images/ramp-south.png',
     columns: 12,
     rowHeight: 40,
     colWidth: 50,
@@ -140,7 +151,7 @@ var game = {
     imgTile: 80,
     imgWidth: 101,
     imgAbove: 50,
-    numEnemies: 6,
+    numEnemies: 10,
     //playerSpeed: 180,
 };
 game.rows = game.rowImages.length;

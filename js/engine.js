@@ -125,7 +125,6 @@ var Engine = (function(global) {
          */
         var row, col;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
@@ -145,7 +144,7 @@ var Engine = (function(global) {
         }
 
         for (var life = 0; life < player.lives; life++) {
-            ctx.drawImage(Resources.get('images/small-heart.png'),
+            ctx.drawImage(Resources.get('heart'),
                 life * game.colWidth/3, 0);
         }
 
@@ -178,14 +177,7 @@ var Engine = (function(global) {
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
      */
-    Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png',
-        'images/small-heart.png'
-    ]);
+    Resources.load(game.assets);
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window
