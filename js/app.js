@@ -40,7 +40,7 @@ var Player = function() {
 //Place the player randomly in the bottom rows
 Player.prototype.place = function() {
     this.x = Math.floor(Math.random() * game.columns) * game.colWidth;
-    this.y = (Math.floor(Math.random() * 2) + 4) * game.rowHeight;
+    this.y = (Math.floor(Math.random() * 3) + 8) * game.rowHeight;
     this.targetX = this.x;
     this.targetY = this.y;
 }
@@ -94,27 +94,34 @@ Player.prototype.die = function() {
 // Change the Player target position in response to input
 // Parameter: Direction to move to
 Player.prototype.handleInput = function(dir) {
+    var newTargetX, newTargetY;
     switch(dir) {
         case 'left':
             if(this.targetX > 0) {
-                this.targetX = this.targetX - game.colWidth;
+                newTargetX = this.targetX - game.colWidth;
             }
             break;
         case 'up':
             if(this.targetY > 0) {
-                this.targetY = this.targetY - game.rowHeight;
+                newTargetY = this.targetY - game.rowHeight;
             }
             break;
         case 'right':
             if(this.targetX < (game.columns - 2) * game.colWidth) {
-                this.targetX = this.targetX + game.colWidth;
+                newTargetX = this.targetX + game.colWidth;
             }
             break;
         case 'down':
             if(this.targetY < (game.rows - 2) * game.rowHeight) {
-                this.targetY = this.targetY + game.rowHeight;
+                newTargetY = this.targetY + game.rowHeight;
             }
             break;
+    }
+    if(Math.abs(newTargetX - this.x) <= game.colWidth) {
+        this.targetX = newTargetX;
+    }
+    if(Math.abs(newTargetY - this.y) <= game.rowHeight) {
+        this.targetY = newTargetY;
     }
 }
 
