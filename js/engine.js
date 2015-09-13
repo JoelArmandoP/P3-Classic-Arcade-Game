@@ -142,10 +142,20 @@ var Engine = (function(global) {
                     col * game.colWidth, game.imgAboveScaled + row * game.rowHeight);
             }
         }
-
-        for (var life = 0; life < player.lives; life++) {
-            ctx.drawImage(Resources.get('heart'),
-                life * game.colWidth/3, 0);
+        for (row = 0; row < game.rows; row++) {
+            for (col = 0; col < game.columns; col++) {
+                /* The drawImage function of the canvas' context element
+                 * requires 3 parameters: the image to draw, the x coordinate
+                 * to start drawing and the y coordinate to start drawing.
+                 * We're using our Resources helpers to refer to our images
+                 * so that we get the benefits of caching these images, since
+                 * we're using them over and over.
+                 */
+                if (game.items[row][col]) {
+                    drawImg(Resources.get(game.items[row][col]),
+                        col* game.colWidth, game.imgAboveScaled + row * game.rowHeight);
+                }
+            }
         }
 
         renderEntities();

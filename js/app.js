@@ -76,6 +76,11 @@ Player.prototype.render = function() {
     if (this.lives > 0) {
         drawImg(Resources.get(this.sprite), this.x, this.y);
     }
+    drawSmallImg(Resources.get(this.sprite), 0, 0);
+    for (var life = 0; life < this.lives; life++) {
+            drawSmallImg(Resources.get('heart'),
+                (life + 1) * game.colWidth/2, 0);
+    }
 }
 
 //Reset player and take one life away
@@ -121,14 +126,20 @@ var game = {
         grass: 'images/grass-block.png',
         enemy: 'images/enemy-bug.png',
         boy:   'images/char-boy.png',
-        heart: 'images/small-heart.png',
+        catGirl: 'images/char-cat-girl.png',
+        hornGirl: 'images/char-horn-girl.png',
+        pinkGirl: 'images/char-pink-girl.png',
+        princessGirl: 'images/char-princess-girl.png',
+        heart: 'images/Heart.png',
         tree:  'images/tree-short.png',
-/*        orangeGem:
-        blueGem:
-        greenGem:
-        key:
-        chestClosed:
-        chestOpen: */
+        orangeGem: 'images/gem-orange.png',
+        blueGem: 'images/gem-blue.png',
+        greenGem: 'images/gem-green.png',
+        key: 'images/Key.png',
+        chestClosed: 'images/chest-closed.png',
+        chestOpen: 'images/chest-open.png',
+        tree: 'images/tree-short.png',
+        rampSouth: 'images/ramp-south.png'
     },
     rowImages: [
         'stone',   // First row is stone
@@ -144,6 +155,26 @@ var game = {
         'grass',   // Row 3 of 4 of grass
         'grass'    // Row 4 of 4 of grass
         ],
+    items: [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+    ],
+    trees: [
+        [8, 5],
+        [9, 5],
+        [9, 0],
+        [10, 0],
+    ],
     columns: 12,
     rowHeight: 40,
     colWidth: 50,
@@ -158,6 +189,15 @@ game.rows = game.rowImages.length;
 game.imgScale = game.colWidth/game.imgWidth;
 game.imgHeightScaled = game.imgHeight * game.imgScale;
 game.imgAboveScaled = game.imgAbove * game.imgScale;
+game.trees.forEach(function (where) { game.items[where[0]][where[1]] = 'tree'; });
+game.items[5][0] = 'orangeGem';
+game.items[4][8] = 'blueGem';
+game.items[6][9] = 'greenGem';
+game.items[8][9] = 'key';
+game.items[0][5] = 'chestClosed';
+game.items[1][5] = 'stone';
+game.items[2][5] = 'rampSouth';
+
 
 // Keep track of all the enemies.
 var allEnemies = [];
@@ -173,6 +213,10 @@ var player = new Player(300, 205);
 
 function drawImg(img, x, y) {
     ctx.drawImage(img, x, y-game.imgAboveScaled, game.colWidth, game.imgHeightScaled);
+}
+
+function drawSmallImg(img, x, y) {
+    ctx.drawImage(img, x, y-game.imgAboveScaled/2, game.colWidth/2, game.imgHeightScaled/2);
 }
 
 // This listens for key presses and sends the keys to
