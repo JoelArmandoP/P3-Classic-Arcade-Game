@@ -1,8 +1,6 @@
 // Enemies our player must avoid
 var Enemy = function() {
-    // Variables applied to each of our instances go here,
     // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
     this.sprite = 'enemy';
     this.place();
 };
@@ -28,21 +26,24 @@ Enemy.prototype.render = function() {
     drawImg(Resources.get(this.sprite), this.x, this.y);
 };
 
-
 // Player constructor
 var Player = function() {
     this.sprite = 'boy';
     this.place();
-    this.speed = 180;
+    this.speed = 180; //TODO define speed as variable, changing with levels.
     this.lives = 3;
+    this.hasKey = false;
 }
 
 //Place the player randomly in the bottom rows
 Player.prototype.place = function() {
-    this.x = Math.floor(Math.random() * game.columns) * game.colWidth;
-    this.y = (Math.floor(Math.random() * 3) + 8) * game.rowHeight;
-    this.targetX = this.x;
-    this.targetY = this.y;
+    while(true) {
+        this.x = Math.floor(Math.random() * game.columns) * game.colWidth;
+        this.y = (Math.floor(Math.random() * 3) + 8) * game.rowHeight;
+        this.targetX = this.x;
+        this.targetY = this.y;
+        if(itemAt(this.x, this.y) == null) return;
+    }
 }
 
 
@@ -68,10 +69,24 @@ Player.prototype.update = function(dt) {
     } else {
         this.y = Math.floor(this.y + dy);
     }
+    if (this.itemInReach() == 'key') {
+        game.items
+            [Math.floor(this.y/game.rowHeight)]
+            [Math.floor(this.x/game.colWidth)] = null;
+        this.hasKey = true;
+    }
+}
 
+// Returns the item that is in the player's reach, if any.
+Player.prototype.itemInReach = function() {
+    return game.items
+        [Math.floor((this.y + game.rowHeight/4)/game.rowHeight)]
+        [Math.floor((this.x + game.colWidth/4)/game.colWidth)];
 }
 
 // Draw the Player on the screen, required method for game
+// Display the lives of the player
+// Dislay the items being held by the player
 Player.prototype.render = function() {
     if (this.lives > 0) {
         drawImg(Resources.get(this.sprite), this.x, this.y);
@@ -80,6 +95,9 @@ Player.prototype.render = function() {
     for (var life = 0; life < this.lives; life++) {
             drawSmallImg(Resources.get('heart'),
                 (life + 1) * game.colWidth/2, 0);
+    }
+    if(this.hasKey) {
+        drawSmallImg(Resources.get('key'), 11.5* game.colWidth,0);
     }
 }
 
@@ -92,9 +110,11 @@ Player.prototype.die = function() {
 }
 
 // Change the Player target position in response to input
+//If the target position is greater than one column or row or it's a tree, the player doesn't move
 // Parameter: Direction to move to
 Player.prototype.handleInput = function(dir) {
-    var newTargetX, newTargetY;
+    var newTargetX = this.targetX;
+    var newTargetY = this.targetY;
     switch(dir) {
         case 'left':
             if(this.targetX > 0) {
@@ -117,15 +137,16 @@ Player.prototype.handleInput = function(dir) {
             }
             break;
     }
-    if(Math.abs(newTargetX - this.x) <= game.colWidth) {
+    if(Math.abs(newTargetX - this.x) <= game.colWidth && itemAt(newTargetX, newTargetY) != 'tree') {
         this.targetX = newTargetX;
     }
-    if(Math.abs(newTargetY - this.y) <= game.rowHeight) {
+    if(Math.abs(newTargetY - this.y) <= game.rowHeight && itemAt(newTargetX, newTargetY) != 'tree') {
         this.targetY = newTargetY;
     }
 }
 
-// Define the parameters for the game: board, lifes and enemies.
+// Define the parameters for the game: board, lifes and enemies
+//Save the images'urls in vars and arrays
 var game = {
     assets: {
         stone: 'images/stone-block.png',
@@ -162,20 +183,7 @@ var game = {
         'grass',   // Row 3 of 4 of grass
         'grass'    // Row 4 of 4 of grass
         ],
-    items: [
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-    ],
+    items: [[], [], [], [], [], [], [], [], [], [], [], [],],
     trees: [
         [8, 5],
         [9, 5],
@@ -190,8 +198,8 @@ var game = {
     imgWidth: 101,
     imgAbove: 50,
     numEnemies: 10,
-    //playerSpeed: 180,
 };
+
 game.rows = game.rowImages.length;
 game.imgScale = game.colWidth/game.imgWidth;
 game.imgHeightScaled = game.imgHeight * game.imgScale;
@@ -206,15 +214,6 @@ game.items[1][5] = 'stone';
 game.items[2][5] = 'rampSouth';
 
 
-// Keep track of all the enemies.
-var allEnemies = [];
-
-// Create the new enemies and push them into allEnemies
-for (var i = 0; i < game.numEnemies; i++) {
-    var enemy = new Enemy();
-    allEnemies.push(enemy);
-}
-
 // Create the Player to start the game
 var player = new Player(300, 205);
 
@@ -224,6 +223,20 @@ function drawImg(img, x, y) {
 
 function drawSmallImg(img, x, y) {
     ctx.drawImage(img, x, y-game.imgAboveScaled/2, game.colWidth/2, game.imgHeightScaled/2);
+}
+
+//Returns the position of an item in the items array
+//@parameters: x,y positions in the canvas
+function itemAt(x, y) {
+    return game.items[Math.floor(y/game.rowHeight)][Math.floor(x/game.colWidth)];
+}
+// Keep track of all the enemies.
+var allEnemies = [];
+
+// Create the new enemies and push them into allEnemies
+for (var i = 0; i < game.numEnemies; i++) {
+    var enemy = new Enemy();
+    allEnemies.push(enemy);
 }
 
 // This listens for key presses and sends the keys to
