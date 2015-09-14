@@ -89,6 +89,7 @@ var Engine = (function(global) {
     *
     */
     function checkCollisions() {
+        if (player.isPoweredUp()) return false;
         var collision = false;
         allEnemies.forEach(function(enemy) {
             if (Math.abs(player.x - enemy.x) < game.colWidth/2 && Math.abs(player.y - enemy.y) < game.rowHeight/2) {

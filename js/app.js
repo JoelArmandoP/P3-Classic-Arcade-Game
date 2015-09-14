@@ -33,6 +33,7 @@ var Player = function() {
     this.speed = 180; //TODO define speed as variable, changing with levels.
     this.lives = 3;
     this.hasKey = false;
+    this.powerUpUntil = 0;
 }
 
 //Place the player randomly in the bottom rows
@@ -69,11 +70,23 @@ Player.prototype.update = function(dt) {
     } else {
         this.y = Math.floor(this.y + dy);
     }
-    if (this.itemInReach() == 'key') {
-        game.items
+    switch(this.itemInReach()) {
+        case 'key':
+            game.items
             [Math.floor(this.y/game.rowHeight)]
             [Math.floor(this.x/game.colWidth)] = null;
-        this.hasKey = true;
+            this.hasKey = true;
+            break;
+        case 'water':
+            this.die();
+            break;
+        case 'gem':
+            game.items
+            [Math.floor(this.y/game.rowHeight)]
+            [Math.floor(this.x/game.colWidth)] = null;
+            this.powerUpUntil = Date.now() + 1500;
+        case 'chest':
+            if(this.hasKey) this.win();
     }
 }
 
@@ -99,6 +112,10 @@ Player.prototype.render = function() {
     if(this.hasKey) {
         drawSmallImg(Resources.get('key'), 11.5* game.colWidth,0);
     }
+
+    if(Date.now() < this.powerUpUntil) {
+        drawSmallImg(Resources.get('gem'), 10.5* game.colWidth,0);
+    }
 }
 
 //Reset player and take one life away
@@ -107,6 +124,14 @@ Player.prototype.die = function() {
     if (this.lives > 0) {
         this.lives -= 1;
     }
+}
+Player.prototype.isPoweredUp = function() {
+    return Date.now() <= this.powerUpUntil;
+}
+
+//TODO
+Player.prototype.win = function() {
+
 }
 
 // Change the Player target position in response to input
@@ -160,9 +185,7 @@ var game = {
         princessGirl: 'images/char-princess-girl.png',
         heart: 'images/Heart.png',
         tree:  'images/tree-short.png',
-        orangeGem: 'images/gem-orange.png',
-        blueGem: 'images/gem-blue.png',
-        greenGem: 'images/gem-green.png',
+        gem: 'images/gem-orange.png',
         key: 'images/Key.png',
         chestClosed: 'images/chest-closed.png',
         chestOpen: 'images/chest-open.png',
@@ -171,25 +194,23 @@ var game = {
     },
     rowImages: [
         'stone',   // First row is stone
-        'water',   // Row 1 of 2 of water
-        'water',   // Row 2 of 2 of water
-        'stone',   // Row 1 of 5 of stone
-        'stone',   // Row 2 of 5 of stone
-        'stone',   // Row 3 of 5 of stone
-        'stone',   // Row 4 of 5 of stone
-        'stone',   // Row 4 of 5 of grass
+        'stone',   // Row 1 of 7 of stone
+        'stone',   // Row 2 of 7 of stone
+        'stone',   // Row 3 of 7 of stone
+        'stone',   // Row 4 of 7 of stone
+        'stone',   // Row 5 of 7 of stone
+        'stone',   // Row 6 of 7 of stone
+        'stone',   // Row 7 of 7 of grass
         'grass',   // Row 1 of 4 of grass
         'grass',   // Row 2 of 4 of grass
         'grass',   // Row 3 of 4 of grass
         'grass'    // Row 4 of 4 of grass
         ],
     items: [[], [], [], [], [], [], [], [], [], [], [], [],],
-    trees: [
-        [8, 5],
-        [9, 5],
-        [9, 0],
-        [10, 0],
-    ],
+    trees: [[8, 5], [9, 5], [9, 0], [10, 0],],
+    gems: [[5, 0], [4, 8], [6, 9]],
+    river: [[1,0],[1,1],[1,2],[1,3],[1,4],[1,6],[1,7],[1,8],[1,9],[1,10], [1,11],
+            [2,0],[2,1],[2,2],[2,3],[2,4],[2,6],[2,7],[2,8],[2,9],[2,10], [2,11],],
     columns: 12,
     rowHeight: 40,
     colWidth: 50,
@@ -205,9 +226,8 @@ game.imgScale = game.colWidth/game.imgWidth;
 game.imgHeightScaled = game.imgHeight * game.imgScale;
 game.imgAboveScaled = game.imgAbove * game.imgScale;
 game.trees.forEach(function (where) { game.items[where[0]][where[1]] = 'tree'; });
-game.items[5][0] = 'orangeGem';
-game.items[4][8] = 'blueGem';
-game.items[6][9] = 'greenGem';
+game.river.forEach(function (where) { game.items[where[0]][where[1]] = 'water';});
+game.gems.forEach(function (where) { game.items[where[0]][where[1]] = 'gem'; });
 game.items[8][9] = 'key';
 game.items[0][5] = 'chestClosed';
 game.items[1][5] = 'stone';
