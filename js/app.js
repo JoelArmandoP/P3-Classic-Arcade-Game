@@ -82,11 +82,17 @@ Player.prototype.update = function(dt) {
             break;
         case 'gem':
             game.items
-            [Math.floor(this.y/game.rowHeight)]
-            [Math.floor(this.x/game.colWidth)] = null;
+                [Math.floor(this.y/game.rowHeight)]
+                [Math.floor(this.x/game.colWidth)] = null;
             this.powerUpUntil = Date.now() + 1500;
-        case 'chest':
-            if(this.hasKey) this.win();
+            break;
+        case 'chestClosed':
+            if(this.hasKey) {
+                game.items[0][5] = 'chestOpen';
+                game.items[0][4] = 'chestLid';
+                this.win();
+            }
+            break;
     }
 }
 
@@ -189,6 +195,7 @@ var game = {
         key: 'images/Key.png',
         chestClosed: 'images/chest-closed.png',
         chestOpen: 'images/chest-open.png',
+        chestLid: 'images/chest-lid.png',
         tree: 'images/tree-short.png',
         rampSouth: 'images/ramp-south.png'
     },
