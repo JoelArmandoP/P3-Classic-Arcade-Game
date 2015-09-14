@@ -39,6 +39,8 @@ var Player = function() {
 
 //Place the player randomly in the bottom rows
 Player.prototype.place = function() {
+    this.died = null;
+    this.diedY = null;
     while(true) {
         this.x = Math.floor(Math.random() * game.columns) * game.colWidth;
         this.y = (Math.floor(Math.random() * 3) + 8) * game.rowHeight;
@@ -52,6 +54,18 @@ Player.prototype.place = function() {
 // It upates the position of the Player
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(dt) {
+    if (this.died) {
+        dt = (Date.now() - this.died)/1000;
+        if (dt < 5) {
+            this.y = this.diedY - 250 * dt + 200 * dt * dt;
+        } else {
+            if (this.lives > 0) {
+                this.lives -= 1;
+            }
+            this.place();
+        }
+        return;
+    }
     var dp = this.speed * dt;
     var dx = Math.abs(this.targetX - this.x);
     if (dx > dp) {
@@ -127,11 +141,10 @@ Player.prototype.render = function() {
 
 //Reset player and take one life away
 Player.prototype.die = function() {
-    this.place();
-    if (this.lives > 0) {
-        this.lives -= 1;
-    }
+    this.died = Date.now();
+    this.diedY = this.y;
 }
+
 Player.prototype.isPoweredUp = function() {
     return Date.now() <= this.powerUpUntil;
 }
