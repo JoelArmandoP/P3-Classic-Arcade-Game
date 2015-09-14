@@ -56,7 +56,7 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        if (player.lives > 0) {
+        if (player.lives > 0 && !player.hasWon) {
             win.requestAnimationFrame(main);
         };
     }

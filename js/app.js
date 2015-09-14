@@ -34,6 +34,7 @@ var Player = function() {
     this.lives = 3;
     this.hasKey = false;
     this.powerUpUntil = 0;
+    this.hasWon = false;
 }
 
 //Place the player randomly in the bottom rows
@@ -137,7 +138,7 @@ Player.prototype.isPoweredUp = function() {
 
 //TODO
 Player.prototype.win = function() {
-
+    this.hasWon = true;
 }
 
 // Change the Player target position in response to input
