@@ -79,19 +79,6 @@ var Engine = (function(global) {
         win.requestAnimationFrame(mainGame);
     }
 
-    /* This function .
-     */
-    function closingScreen() {
-        /* Get our time delta information which is required if your game
-         * requires smooth animation.
-         */
-
-        /* Use the browser's requestAnimationFrame function to call this
-         * function again as soon as the browser is able to draw another frame.
-         */
-    }
-
-
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
      * game loop.
@@ -101,7 +88,6 @@ var Engine = (function(global) {
         lastTime = Date.now();
         mainGame();
         endTime = lastTime + 2000;
-        closingScreen();
     }
 
     /* This function is called by mainGame (our game loop) and itself calls all
@@ -118,8 +104,8 @@ var Engine = (function(global) {
         checkCollisions();
     }
 
-    /*
-    *
+    /* Checks player - enemy collisions and calls the player.die() function
+    * when a collision is produced.
     */
     function checkCollisions() {
         if (player.isPoweredUp() || player.died) return false;

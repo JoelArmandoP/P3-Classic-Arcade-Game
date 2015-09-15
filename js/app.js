@@ -1,3 +1,4 @@
+'use strict';
 // Enemies our player must avoid
 var Enemy = function() {
     // The image/sprite for our enemies, this uses
@@ -5,8 +6,9 @@ var Enemy = function() {
     this.place();
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/* Update the enemy's position, required method for game
+ * Parameter: dt, a time delta between ticks
+ */
 Enemy.prototype.update = function(dt) {
     this.x = Math.floor(this.x + this.speed * dt);
     if (this.x > game.columns * game.colWidth) {
@@ -18,7 +20,7 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.place = function() {
     this.x = -Math.floor(Math.random() * game.columns) * game.colWidth - game.colWidth;
     this.y = Math.floor(Math.random() * 5 + 3) * game.rowHeight;
-    this.speed = Math.floor(Math.random() * 100 ) + 90;
+    this.speed = Math.floor(Math.random() * 150 ) + 90;
 }
 
 // Draw the enemy on the screen, required method for game
@@ -30,7 +32,7 @@ Enemy.prototype.render = function() {
 var Player = function() {
     this.sprite = 'boy';
     this.place();
-    this.speed = 180; //TODO define speed as variable, changing with levels.
+    this.speed = 180;
     this.lives = 3;
     this.hasKey = false;
     this.powerUpUntil = 0;
@@ -51,8 +53,9 @@ Player.prototype.place = function() {
 }
 
 
-// It upates the position of the Player
-// Parameter: dt, a time delta between ticks
+/* It upates the position of the Player
+ * parameter: dt, a time delta between ticks
+ */
 Player.prototype.update = function(dt) {
     if (this.died) {
         dt = (Date.now() - this.died)/1000;
@@ -118,9 +121,10 @@ Player.prototype.itemInReach = function() {
         [Math.floor((this.x + game.colWidth/4)/game.colWidth)];
 }
 
-// Draw the Player on the screen, required method for game
-// Display the lives of the player
-// Dislay the items being held by the player
+/* Draw the Player on the screen, required method for game
+ * Display the lives of the player
+ * Dislay the items being held by the player
+ */
 Player.prototype.render = function() {
     if (this.lives > 0) {
         drawImg(Resources.get(this.sprite), this.x, this.y);
@@ -145,18 +149,20 @@ Player.prototype.die = function() {
     this.diedY = this.y;
 }
 
+//Controls the time the player is powered up
 Player.prototype.isPoweredUp = function() {
     return Date.now() <= this.powerUpUntil;
 }
 
-//TODO
+//Set the hasWon value to true
 Player.prototype.win = function() {
     this.hasWon = true;
 }
 
-// Change the Player target position in response to input
-//If the target position is greater than one column or row or it's a tree, the player doesn't move
-// Parameter: Direction to move to
+/* Change the Player target position in response to input
+ * If the target position is greater than one column or row or it's a tree, the player doesn't move
+ * parameter: Direction to move to
+ */
 Player.prototype.handleInput = function(dir) {
     var newTargetX = this.targetX;
     var newTargetY = this.targetY;
@@ -190,8 +196,9 @@ Player.prototype.handleInput = function(dir) {
     }
 }
 
-// Define the parameters for the game: board, lifes and enemies
-//Save the images'urls in vars and arrays
+/* Define the parameters for the game: board, lifes and enemies
+ * Save the images'urls in vars and arrays
+ */
 var game = {
     assets: {
         stone: 'images/stone-block.png',
@@ -258,16 +265,19 @@ game.items[2][5] = 'rampSouth';
 // Create the Player to start the game
 var player = new Player(300, 205);
 
+//Draw the image in a position in the canvas
 function drawImg(img, x, y) {
     ctx.drawImage(img, x, y-game.imgAboveScaled, game.colWidth, game.imgHeightScaled);
 }
 
+//Scale and draw the image in a position in the canvas
 function drawSmallImg(img, x, y) {
     ctx.drawImage(img, x, y-game.imgAboveScaled/2, game.colWidth/2, game.imgHeightScaled/2);
 }
 
-//Returns the position of an item in the items array
-//@parameters: x,y positions in the canvas
+/* Returns the position of an item in the items array
+ * parameters: x,y positions in the canvas
+ */
 function itemAt(x, y) {
     return game.items[Math.floor(y/game.rowHeight)][Math.floor(x/game.colWidth)];
 }
@@ -280,8 +290,9 @@ for (var i = 0; i < game.numEnemies; i++) {
     allEnemies.push(enemy);
 }
 
-// This listens for key presses and sends the keys to
-// Player.handleInput() method.
+/* This listens for key presses and sends the keys to
+ * Player.handleInput() method
+ */
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
