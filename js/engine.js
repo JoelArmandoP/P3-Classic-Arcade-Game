@@ -23,7 +23,7 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime, endTime;
 
     canvas.width = game.colWidth * game.columns;
     canvas.height = game.rowHeight * game.rows;
@@ -32,34 +32,65 @@ var Engine = (function(global) {
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
-    function main() {
-        /* Get our time delta information which is required if your game
-         * requires smooth animation. Because everyone's computer processes
-         * instructions at different speeds we need a constant value that
-         * would be the same for everyone (regardless of how fast their
-         * computer is) - hurray time!
-         */
-        var now = Date.now(),
-            dt = (now - lastTime) / 1000.0;
+    function mainGame() {
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
+        if (player.lives > 0 && !player.hasWon) {
+            /* Get our time delta information which is required if your game
+             * requires smooth animation. Because everyone's computer processes
+             * instructions at different speeds we need a constant value that
+             * would be the same for everyone (regardless of how fast their
+             * computer is) - hurray time!
+             */
+            var now = Date.now(),
+                dt = (now - lastTime) / 1000.0;
+            update(dt);
+            render();
+            /* Set our lastTime variable which is used to determine the time delta
+             * for the next time this function is called.
+             */
+            lastTime = now;
+            if (player.hasWon || player.lives < 1) {
+                endTime = now + 1500;
+            }
+        } else {
+            var now = Date.now();
+            if (now > endTime) {
+                return;
+            };
+            render();
+            ctx.textAlign = 'center';
+            ctx.font = (1 + 99 * (now-lastTime)/(endTime-lastTime)) + 'px Arial';
+            var msg;
+            if (player.hasWon) {
+                msg = 'You won!';
+            } else {
+                msg = 'Game over!';
+            }
+            ctx.fillText(msg, game.columns * game.colWidth / 2, game.rows * game.rowHeight / 2);
+        };
 
-        /* Set our lastTime variable which is used to determine the time delta
-         * for the next time this function is called.
-         */
-        lastTime = now;
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        if (player.lives > 0 && !player.hasWon) {
-            win.requestAnimationFrame(main);
-        };
+        win.requestAnimationFrame(mainGame);
     }
+
+    /* This function .
+     */
+    function closingScreen() {
+        /* Get our time delta information which is required if your game
+         * requires smooth animation.
+         */
+
+        /* Use the browser's requestAnimationFrame function to call this
+         * function again as soon as the browser is able to draw another frame.
+         */
+    }
+
 
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
@@ -68,10 +99,12 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
-        main();
+        mainGame();
+        endTime = lastTime + 2000;
+        closingScreen();
     }
 
-    /* This function is called by main (our game loop) and itself calls all
+    /* This function is called by mainGame (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
      * same space, for instance when your character should die), you may find

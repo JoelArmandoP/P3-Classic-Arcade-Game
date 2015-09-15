@@ -56,8 +56,8 @@ Player.prototype.place = function() {
 Player.prototype.update = function(dt) {
     if (this.died) {
         dt = (Date.now() - this.died)/1000;
-        if (dt < 5) {
-            this.y = this.diedY - 250 * dt + 200 * dt * dt;
+        if (this.y <= (game.rows + 1) * game.rowHeight) {
+            this.y = this.diedY - 300 * dt + 200 * dt * dt;
         } else {
             if (this.lives > 0) {
                 this.lives -= 1;
