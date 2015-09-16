@@ -37,6 +37,7 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
+        var now = Date.now();
         if (player.lives > 0 && !player.hasWon) {
             /* Get our time delta information which is required if your game
              * requires smooth animation. Because everyone's computer processes
@@ -44,8 +45,7 @@ var Engine = (function(global) {
              * would be the same for everyone (regardless of how fast their
              * computer is) - hurray time!
              */
-            var now = Date.now(),
-                dt = (now - lastTime) / 1000.0;
+            var dt = (now - lastTime) / 1000.0;
             update(dt);
             render();
             /* Set our lastTime variable which is used to determine the time delta
@@ -56,10 +56,9 @@ var Engine = (function(global) {
                 endTime = now + 1500;
             }
         } else {
-            var now = Date.now();
             if (now > endTime) {
                 return;
-            };
+            }
             render();
             ctx.textAlign = 'center';
             ctx.font = (1 + 99 * (now-lastTime)/(endTime-lastTime)) + 'px Arial';
@@ -70,7 +69,7 @@ var Engine = (function(global) {
                 msg = 'Game over!';
             }
             ctx.fillText(msg, game.columns * game.colWidth / 2, game.rows * game.rowHeight / 2);
-        };
+        }
 
 
         /* Use the browser's requestAnimationFrame function to call this
@@ -114,7 +113,7 @@ var Engine = (function(global) {
             if (Math.abs(player.x - enemy.x) < game.colWidth/2 && Math.abs(player.y - enemy.y) < game.rowHeight/2) {
                 collision = true;
             };
-        });
+        })
         if (collision) {
             player.die();
         }

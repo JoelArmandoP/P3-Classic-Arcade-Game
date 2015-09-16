@@ -1,3 +1,7 @@
+/* App.js
+ * This is files contains the objects that make up
+ * the behaviour of the game
+ */
 'use strict';
 // Enemies our player must avoid
 var Enemy = function() {
@@ -7,7 +11,7 @@ var Enemy = function() {
 };
 
 /* Update the enemy's position, required method for game
- * Parameter: dt, a time delta between ticks
+ * Parameter: {number} dt - a time delta between ticks
  */
 Enemy.prototype.update = function(dt) {
     this.x = Math.floor(this.x + this.speed * dt);
@@ -16,19 +20,26 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-// Place the enemy at a random position with a random speed
+/* Place the enemy at a random position betwen the 3rd and 8th row
+ * with a random speed
+ */
 Enemy.prototype.place = function() {
     this.x = -Math.floor(Math.random() * game.columns) * game.colWidth - game.colWidth;
     this.y = Math.floor(Math.random() * 5 + 3) * game.rowHeight;
     this.speed = Math.floor(Math.random() * 150 ) + 90;
-}
+};
 
-// Draw the enemy on the screen, required method for game
+/*Draw the enemy on the screen, required method for game
+ */
 Enemy.prototype.render = function() {
     drawImg(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Player constructor
+/* Construct a player
+ *@constructor
+ * It gives a sprite to the player and sets properties (number of lives, hasKey, powerUpUnitil, hasWon)
+ * Call the place() function to place the player in a random position
+ */
 var Player = function() {
     this.sprite = 'boy';
     this.place();
@@ -37,9 +48,10 @@ var Player = function() {
     this.hasKey = false;
     this.powerUpUntil = 0;
     this.hasWon = false;
-}
+};
 
-//Place the player randomly in the bottom rows
+/*Place the player randomly in the bottom rows
+ */
 Player.prototype.place = function() {
     this.died = null;
     this.diedY = null;
@@ -50,11 +62,11 @@ Player.prototype.place = function() {
         this.targetY = this.y;
         if(itemAt(this.x, this.y) == null) return;
     }
-}
+};
 
 
 /* It upates the position of the Player
- * parameter: dt, a time delta between ticks
+ * @parameter: dt, a time delta between ticks
  */
 Player.prototype.update = function(dt) {
     if (this.died) {
@@ -112,14 +124,15 @@ Player.prototype.update = function(dt) {
             }
             break;
     }
-}
+};
 
-// Returns the item that is in the player's reach, if any.
+/* Returns the item that is in the player's reach, if any.
+ */
 Player.prototype.itemInReach = function() {
     return game.items
         [Math.floor((this.y + game.rowHeight/4)/game.rowHeight)]
         [Math.floor((this.x + game.colWidth/4)/game.colWidth)];
-}
+};
 
 /* Draw the Player on the screen, required method for game
  * Display the lives of the player
@@ -141,27 +154,27 @@ Player.prototype.render = function() {
     if(Date.now() < this.powerUpUntil) {
         drawSmallImg(Resources.get('gem'), 10.5* game.colWidth,0);
     }
-}
+};
 
-//Reset player and take one life away
+/* Reset player and take one life away*/
 Player.prototype.die = function() {
     this.died = Date.now();
     this.diedY = this.y;
-}
+};
 
-//Controls the time the player is powered up
+/*Controls the time the player is powered up*/
 Player.prototype.isPoweredUp = function() {
     return Date.now() <= this.powerUpUntil;
-}
+};
 
-//Set the hasWon value to true
+/*Set the hasWon value to true*/
 Player.prototype.win = function() {
     this.hasWon = true;
 }
 
 /* Change the Player target position in response to input
  * If the target position is greater than one column or row or it's a tree, the player doesn't move
- * parameter: Direction to move to
+ * @param {} Direction to move to
  */
 Player.prototype.handleInput = function(dir) {
     var newTargetX = this.targetX;
@@ -217,7 +230,6 @@ var game = {
         chestClosed: 'images/chest-closed.png',
         chestOpen: 'images/chest-open.png',
         chestLid: 'images/chest-lid.png',
-        tree: 'images/tree-short.png',
         rampSouth: 'images/ramp-south.png'
     },
     rowImages: [
@@ -303,4 +315,3 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
